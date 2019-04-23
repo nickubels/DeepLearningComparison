@@ -101,7 +101,7 @@ class DeepLearningComparison:
 
     def eval_network(self):
         logger.info("Start evaluating the network")
-        net.eval()
+        self.net.eval()
         total = 0
         correct = 0
         with torch.no_grad():

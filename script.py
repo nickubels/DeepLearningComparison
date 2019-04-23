@@ -69,7 +69,7 @@ class DeepLearningComparison:
     def train_network(self):
         logger.info("Start training network")
         running_loss = 0.0
-        for epoch in range(self.args.epochs):
+        for epoch in range(int(self.args.epochs)):
             epoch_loss = 0.0
             for i, data in enumerate(self.train_loader, 0):
                 # Getting the inputs

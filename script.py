@@ -123,6 +123,7 @@ class DeepLearningComparison:
 
         # Calculate accuracy and log
         accuracy = 100.*correct/total
+        logger.info("Evaluation succesful, result: ")
         logger.info(accuracy)
 
     def run(self):

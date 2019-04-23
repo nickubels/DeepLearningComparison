@@ -4,6 +4,7 @@ import torchvision
 import torch.nn as nn
 import os
 
+
 def get_args():
     parser = argparse.ArgumentParser(description='Train the network')
     parser.add_argument('--gpu', '-g' ,action='store_true', default=False, help="Whether the GPU should be used or not")

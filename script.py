@@ -5,8 +5,8 @@ import torchvision.transforms as transforms
 import torch.nn as nn
 import torch.optim as optim
 import os
-
 from vgg import VGG
+
 
 def get_args():
     parser = argparse.ArgumentParser(description='Train the network')

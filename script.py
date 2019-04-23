@@ -1,52 +1,73 @@
 import argparse
+import logging
+import os
+import sys
+
 import torch
-import torchvision
-import torchvision.transforms as transforms
 import torch.nn as nn
 import torch.optim as optim
-import os
+import torchvision
+import torchvision.transforms as transforms
+
 from vgg import VGG
 
+logger = logging.getLogger()
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 def get_args():
     parser = argparse.ArgumentParser(description='Train the network')
-    parser.add_argument('--gpu', '-g' ,action='store_true', default=False, help="Whether the GPU should be used or not")
-    parser.add_argument('--epochs', '-e' ,metavar='INT', default=20, help="Amount of epochs")
-    parser.add_argument('--optimizer', '-o' ,metavar='STRING', default="", help="The optimizer you want to use")
-    parser.add_argument('--jobid' ,'-j' ,metavar='STRING', default="" , help="Jobid used for saving files")
+    parser.add_argument('--gpu', '-g', action='store_true', default=False, help="Whether the GPU should be used or not")
+    parser.add_argument('--epochs', '-e', metavar='INT', default=20, help="Amount of epochs")
+    parser.add_argument('--optimizer', '-o', metavar='STRING', default="", help="The optimizer you want to use")
+    parser.add_argument('--job_id', '-j', metavar='STRING', default="", help="Job_id used for saving files")
+    parser.add_argument('--root', '-d', metavar='STRING', default="./data/", help="Path to data")
     return parser.parse_args()
 
 
 class DeepLearningComparison:
+
     def __init__(self):
         self.args = get_args()
+        self.train_loader = None
+        self.test_loader = None
+        self.net = None
+        self.criterion = None
+        self.optimizer = None
 
-        data_path = './data/'
-        if not os.path.exists(data_path):
-            os.makedirs(data_path)
+    def load_data(self):
+        logger.info("Start loading data")
+        if not os.path.exists(self.args.root):
+            os.makedirs(self.args.root)
 
-        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-         ])
+        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
         # Loading the training data
-        trainset = torchvision.datasets.CIFAR10(data_path, train=True, transform=transform, target_transform=None, download=True)
-        self.trainloader = torch.utils.data.DataLoader(trainset, batch_size=4, shuffle=True, num_workers=2)
+        train_set = torchvision.datasets.CIFAR10(self.args.root, train=True, transform=transform,
+                                                 target_transform=None, download=True)
+        self.train_loader = torch.utils.data.DataLoader(train_set, batch_size=4, shuffle=True, num_workers=2)
 
         # Loading the test data
-        testset = torchvision.datasets.CIFAR10(data_path, train=False, transform=transform, target_transform=None, download=True)
-        self.testloader = torch.utils.data.DataLoader(testset, batch_size=4, shuffle=True, num_workers=2)
+        test_set = torchvision.datasets.CIFAR10(self.args.root, train=False, transform=transform,
+                                                target_transform=None, download=True)
+        self.test_loader = torch.utils.data.DataLoader(test_set, batch_size=4, shuffle=True, num_workers=2)
+        logger.info("Loading data was successful")
 
+    def load_network(self):
+        logger.info("Start loading network, loss function and optimizer")
         # Load a network
         self.net = VGG('VGG19')
 
         # Define the loss function and the optimizer
         self.criterion = nn.CrossEntropyLoss()
         self.optimizer = optim.SGD(self.net.parameters(), lr=0.001, momentum=0.9)
+        logger.info("Loading network, loss function and optimizer was successful")
 
     def train_network(self):
+        logger.info("Start training network")
+        running_loss = 0.0
         for epoch in range(self.args.epochs):
             epoch_loss = 0.0
-            for i,data in enumerate(self.trainloader, 0):
+            for i, data in enumerate(self.train_loader, 0):
                 # Getting the inputs
                 inputs, labels = data
 
@@ -64,11 +85,20 @@ class DeepLearningComparison:
                 # Save loss
                 epoch_loss += loss.item()
 
-                if i % 2000 == 1999:    # print every 2000 mini-batches
-                    print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 2000))
+                if i % 2000 == 1999:  # print every 2000 mini-batches
+                    logging.info("[%d, %5d] loss: %.3f", epoch + 1, i + 1, running_loss / 2000)
                 running_loss = 0.0
+
+    logger.info("Training networks was successful")
+
+    def run(self):
+        logger.info("This is a test")
+        self.load_data()
+        self.load_network()
+        self.train_network()
 
 
 if __name__ == '__main__':
+    logger.info("This is a test")
     comparison = DeepLearningComparison()
-    comparison.train_network()
+    comparison.run()

@@ -131,7 +131,7 @@ class DeepLearningComparison:
         self.load_data()
         self.load_network()
         self.train_network()
-        self.eval_network
+        self.eval_network()
 
 
 if __name__ == '__main__':

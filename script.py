@@ -30,11 +30,11 @@ class DeepLearningComparison:
 
         # Loading the training data
         trainset = torchvision.datasets.CIFAR10(data_path, train=True, transform=transform, target_transform=None, download=True)
-        self.trainloader = torch.utils.data.DataLoader(trainset, batch_size=4, shuffle=True, num_workers=2)
+        self.trainloader = torch.utils.data.DataLoader(trainset, batch_size=128, shuffle=True, num_workers=2)
 
         # Loading the test data
         testset = torchvision.datasets.CIFAR10(data_path, train=False, transform=transform, target_transform=None, download=True)
-        self.testloader = torch.utils.data.DataLoader(testset, batch_size=4, shuffle=True, num_workers=2)
+        self.testloader = torch.utils.data.DataLoader(testset, batch_size=128, shuffle=True, num_workers=2)
 
         # Load a network
         self.net = VGG('VGG19')

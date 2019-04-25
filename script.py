@@ -14,6 +14,7 @@ from vgg import VGG
 logger = logging.getLogger()
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
+
 def get_args():
     parser = argparse.ArgumentParser(description='Train the network')
     parser.add_argument('--gpu', '-g', action='store_true', default=False, help="Whether the GPU should be used or not")
@@ -54,6 +55,7 @@ class DeepLearningComparison:
 
     def load_network(self):
         logger.info("Start loading network, loss function and optimizer")
+
         # Load a network
         self.net = VGG('VGG19')
 
@@ -63,12 +65,42 @@ class DeepLearningComparison:
 
         # Define the loss function and the optimizer
         self.criterion = nn.CrossEntropyLoss()
-        self.optimizer = optim.SGD(self.net.parameters(), lr=0.001, momentum=0.9)
-        logger.info("Loading network, loss function and optimizer was successful")
+
+        if self.args.optimizer.lower() == 'adadelta':
+            self.optimizer = optim.Adadelta(self.net.parameters(), lr=1.0, rho=0.9, eps=1e-06, weight_decay=0)
+        elif self.args.optimizer.lower() == 'adagrad':
+            self.optimizer = optim.Adagrad(self.net.parameters(), lr=0.01, lr_decay=0, weight_decay=0,
+                                           initial_accumulator_value=0)
+        elif self.args.optimizer.lower() == 'adam':
+            self.optimizer = optim.Adam(self.net.parameters(), lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=0,
+                                        amsgrad=False)
+        elif self.args.optimizer.lower() == 'sparseadam':
+            self.optimizer = optim.SparseAdam(self.net.parameters(), lr=0.001, betas=(0.9, 0.999), eps=1e-08)
+        elif self.args.optimizer.lower() == 'adamax':
+            self.optimizer = optim.Adamax(self.net.parameters(), lr=0.002, betas=(0.9, 0.999), eps=1e-08,
+                                          weight_decay=0)
+        elif self.args.optimizer.lower() == 'adagrad':
+            self.optimizer = optim.ASGD(self.net.parameters(), lr=0.01, lambd=0.0001, alpha=0.75, t0=1000000.0,
+                                        weight_decay=0)
+        elif self.args.optimizer.lower() == 'asgd':
+            self.optimizer = optim.LBFGS(self.net.parameters(), lr=1, max_iter=20, max_eval=None, tolerance_grad=1e-05,
+                                         tolerance_change=1e-09, history_size=100, line_search_fn=None)
+        elif self.args.optimizer.lower() == 'lbfgs':
+            self.optimizer = optim.RMSprop(self.net.parameters(), lr=0.01, alpha=0.99, eps=1e-08, weight_decay=0,
+                                           momentum=0, centered=False)
+        elif self.args.optimizer.lower() == 'rmsprop':
+            self.optimizer = optim.Rprop(self.net.parameters(), lr=0.01, etas=(0.5, 1.2), step_sizes=(1e-06, 50))
+        elif self.args.optimizer.lower() == 'rpop':
+            self.optimizer = optim.SGD(self.net.parameters(), lr=0.001, momentum=0, dampening=0, weight_decay=0,
+                                       nesterov=False)
+        else:
+            self.optimizer = optim.SGD(self.net.parameters(), lr=0.001, momentum=0.9)
+
+        logger.info("Loading network, loss function and %s optimizer was successful", self.args.optimizer)
 
     def train_network(self):
         logger.info("Start training network")
-        running_loss = 0.0
+
         for epoch in range(int(self.args.epochs)):
             epoch_loss = 0.0
             for i, data in enumerate(self.train_loader, 0):
@@ -97,10 +129,12 @@ class DeepLearningComparison:
                 if i % 50 == 49:  # print every 50 mini-batches
                     logging.info("[%d, %5d] loss: %.3f", epoch + 1, i + 1, epoch_loss / 50)
                 epoch_loss = 0.0
+
         logger.info("Training networks was successful")
 
     def eval_network(self):
         logger.info("Start evaluating the network")
+
         self.net.eval()
         total = 0
         correct = 0
@@ -122,19 +156,22 @@ class DeepLearningComparison:
                 correct += predicted.eq(labels).sum().item()
 
         # Calculate accuracy and log
-        accuracy = 100.*correct/total
+        accuracy = 100. * correct / total
         logger.info("Evaluation succesful, result: ")
         logger.info(accuracy)
 
     def run(self):
-        logger.info("This is a test")
+        logger.info("Start the run")
         self.load_data()
         self.load_network()
         self.train_network()
         self.eval_network()
 
 
-if __name__ == '__main__':
-    logger.info("This is a test")
+def main():
     comparison = DeepLearningComparison()
     comparison.run()
+
+
+if __name__ == '__main__':
+    main()

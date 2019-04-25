@@ -212,7 +212,7 @@ class DeepLearningComparison:
         self.load_data()
         self.load_network()
 
-        for epoch in range(self.args.epochs):
+        for epoch in range(int(self.args.epochs)):
             logger.info("Starting on training/eval %d", epoch)
             self.train_network()
 

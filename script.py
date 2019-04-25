@@ -72,9 +72,9 @@ class DeepLearningComparison:
         test_sampler = torch.utils.data.sampler.SubsetRandomSampler(test_idx)
         valid_sampler = torch.utils.data.sampler.SubsetRandomSampler(valid_idx)
 
-        self.test_loader = torch.utils.data.DataLoader(test_set, batch_size=512, shuffle=True, num_workers=2, sampler=test_sampler)
+        self.test_loader = torch.utils.data.DataLoader(test_set, batch_size=512, num_workers=2, sampler=test_sampler)
 
-        self.valid_loader = torch.utils.data.DataLoader(test_set, batch_size=512, shuffle=True, num_workers=2, sampler=valid_sampler)
+        self.valid_loader = torch.utils.data.DataLoader(test_set, batch_size=512, num_workers=2, sampler=valid_sampler)
         logger.info("Loading data was successful")
 
     def load_network(self):

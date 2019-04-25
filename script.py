@@ -40,7 +40,7 @@ class DeepLearningComparison:
         if not os.path.exists(self.args.root):
             os.makedirs(self.args.root)
 
-        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))])
 
         # Loading the training data
         train_set = torchvision.datasets.CIFAR10(self.args.root, train=True, transform=transform,
@@ -126,9 +126,7 @@ class DeepLearningComparison:
                 # Save loss
                 epoch_loss += loss.item()
 
-                if i % 50 == 49:  # print every 50 mini-batches
-                    logging.info("[%d, %5d] loss: %.3f", epoch + 1, i + 1, epoch_loss / 50)
-                epoch_loss = 0.0
+            logging.info("[%d] loss: %.3f", epoch + 1, epoch_loss)
 
         logger.info("Training networks was successful")
 

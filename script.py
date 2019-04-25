@@ -52,12 +52,12 @@ class DeepLearningComparison:
         # Loading the training data
         train_set = torchvision.datasets.CIFAR10(self.args.root, train=True, transform=transform,
                                                  target_transform=None, download=True)
-        self.train_loader = torch.utils.data.DataLoader(train_set, batch_size=128, shuffle=True, num_workers=2)
+        self.train_loader = torch.utils.data.DataLoader(train_set, batch_size=512, shuffle=True, num_workers=2)
 
         # Loading the test data
         test_set = torchvision.datasets.CIFAR10(self.args.root, train=False, transform=transform,
                                                 target_transform=None, download=True)
-        self.test_loader = torch.utils.data.DataLoader(test_set, batch_size=128, shuffle=True, num_workers=2)
+        self.test_loader = torch.utils.data.DataLoader(test_set, batch_size=512, shuffle=True, num_workers=2)
         logger.info("Loading data was successful")
 
     def load_network(self):
@@ -107,10 +107,10 @@ class DeepLearningComparison:
 
     def train_network(self):
         logger.info("Start training network")
-        if not os.path.exists(self.args.output_path):
-            os.makedirs(self.args.output_path)
+        if not os.path.exists(self.args.output):
+            os.makedirs(self.args.output)
 
-        save_loss = np.zeros(len(EPOCH_INTERVAL))
+        save_loss = np.zeros(EPOCH_INTERVAL)
 
         self.net.train()
         for epoch in range(int(EPOCH_INTERVAL)):
@@ -174,14 +174,14 @@ class DeepLearningComparison:
         logger.info(accuracy)
 
     def save_output(self):
-        np.savetxt(os.path.join(self.args.output_path, 'epoch_error.csv'), self.save_loss_all)
-        np.savetxt(os.path.join(self.args.output_path, 'accuracy.csv'), self.save_accuracy_all)
+        np.savetxt(os.path.join(self.args.output, 'epoch_error.csv'), self.save_loss_all)
+        np.savetxt(os.path.join(self.args.output, 'accuracy.csv'), self.save_accuracy_all)
 
     def run(self):
         logger.info("Start the run")
         self.load_data()
         self.load_network()
-        num_iter = int(self.args.epochs)/EPOCH_INTERVAL
+        num_iter = int(int(self.args.epochs)/EPOCH_INTERVAL)
         for i in range(num_iter):
             logger.info("Starting on training/eval %d", i)
             self.train_network()

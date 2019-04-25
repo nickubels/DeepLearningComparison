@@ -15,9 +15,6 @@ from vgg import VGG
 logger = logging.getLogger()
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-EPOCH_INTERVAL = 20
-
-
 def get_args():
     parser = argparse.ArgumentParser(description='Train the network')
     parser.add_argument('--gpu', '-g', action='store_true', default=False, help="Whether the GPU should be used or not")
@@ -39,6 +36,7 @@ class DeepLearningComparison:
         logger.info(self.args)
         self.train_loader = None
         self.test_loader = None
+        self.valid_loader = None
         self.net = None
         self.criterion = None
         self.optimizer = None

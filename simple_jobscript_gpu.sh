@@ -13,4 +13,4 @@
 module load Python/3.6.4-foss-2018a
 module load CUDA/9.1.85
 source venv/bin/activate
-python3 script.py --epochs 1 --gpu -j $SLURM_JOB_ID
+python3 script.py --epochs 40 --gpu -j $SLURM_JOB_ID

@@ -29,6 +29,7 @@ class DeepLearningComparison:
 
     def __init__(self):
         self.args = get_args()
+        logger.info(self.args)
         self.train_loader = None
         self.test_loader = None
         self.net = None

@@ -79,18 +79,18 @@ class DeepLearningComparison:
         elif self.args.optimizer.lower() == 'adamax':
             self.optimizer = optim.Adamax(self.net.parameters(), lr=0.002, betas=(0.9, 0.999), eps=1e-08,
                                           weight_decay=0)
-        elif self.args.optimizer.lower() == 'adagrad':
+        elif self.args.optimizer.lower() == 'asgd':
             self.optimizer = optim.ASGD(self.net.parameters(), lr=0.01, lambd=0.0001, alpha=0.75, t0=1000000.0,
                                         weight_decay=0)
-        elif self.args.optimizer.lower() == 'asgd':
+        elif self.args.optimizer.lower() == 'lbfgs':
             self.optimizer = optim.LBFGS(self.net.parameters(), lr=1, max_iter=20, max_eval=None, tolerance_grad=1e-05,
                                          tolerance_change=1e-09, history_size=100, line_search_fn=None)
-        elif self.args.optimizer.lower() == 'lbfgs':
+        elif self.args.optimizer.lower() == 'rmsprop':
             self.optimizer = optim.RMSprop(self.net.parameters(), lr=0.01, alpha=0.99, eps=1e-08, weight_decay=0,
                                            momentum=0, centered=False)
-        elif self.args.optimizer.lower() == 'rmsprop':
+        elif self.args.optimizer.lower() == 'rprop':
             self.optimizer = optim.Rprop(self.net.parameters(), lr=0.01, etas=(0.5, 1.2), step_sizes=(1e-06, 50))
-        elif self.args.optimizer.lower() == 'rpop':
+        elif self.args.optimizer.lower() == 'sgd':
             self.optimizer = optim.SGD(self.net.parameters(), lr=0.001, momentum=0, dampening=0, weight_decay=0,
                                        nesterov=False)
         else:

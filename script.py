@@ -15,6 +15,8 @@ from vgg import VGG
 logger = logging.getLogger()
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
+EPOCH_INTERVAL = 20
+
 
 def get_args():
     parser = argparse.ArgumentParser(description='Train the network')
@@ -108,8 +110,10 @@ class DeepLearningComparison:
         if not os.path.exists(self.args.output_path):
             os.makedirs(self.args.output_path)
 
-        save_loss = np.zeros(len(self.args.epochs))
-        for epoch in range(int(self.args.epochs)):
+        save_loss = np.zeros(len(EPOCH_INTERVAL))
+
+        self.net.train()
+        for epoch in range(int(EPOCH_INTERVAL)):
             epoch_loss = 0.0
             for i, data in enumerate(self.train_loader, 0):
                 # Getting the inputs
@@ -177,8 +181,11 @@ class DeepLearningComparison:
         logger.info("Start the run")
         self.load_data()
         self.load_network()
-        self.train_network()
-        self.eval_network()
+        num_iter = int(self.args.epochs)/EPOCH_INTERVAL
+        for i in range(num_iter):
+            logger.info("Starting on training/eval %d", i)
+            self.train_network()
+            self.eval_network()
         self.save_output()
 
 

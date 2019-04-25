@@ -23,10 +23,10 @@ def get_args():
     parser.add_argument('--gpu', '-g', action='store_true', default=False, help="Whether the GPU should be used or not")
     parser.add_argument('--epochs', '-e', metavar='INT', default=20, help="Amount of epochs")
     parser.add_argument('--optimizer', '-o', metavar='STRING', default="", help="The optimizer you want to use")
-    parser.add_argument('--job_id', '-j', metavar='STRING', default="", help="Job_id used for saving files")
+    parser.add_argument('--job_id', '-j', metavar='STRING', default="sgd", help="Job_id used for saving files")
     parser.add_argument('--root', '-d', metavar='STRING', default="./data/", help="Path to data")
     parser.add_argument('--output', '-p', metavar='STRING', default="./output/", help="Path for output")
-    parser.add_argument('--split', '-s', metavar='INT', default=.1,
+    parser.add_argument('--split', '-s', metavar='INT', default=.9,
                         help="percentage of test set used for validation set")
     parser.add_argument('--seed', '-r', metavar='INT', default=1337, help="Random seed for shuffle")
     return parser.parse_args()
@@ -106,6 +106,7 @@ class DeepLearningComparison:
             self.optimizer = optim.SGD(self.net.parameters(), lr=0.001, momentum=0, dampening=0, weight_decay=0,
                                        nesterov=False)
         else:
+            logger.info("Unknown network given, SGD is chosen instead.")
             self.optimizer = optim.SGD(self.net.parameters(), lr=0.001, momentum=0.9)
 
         logger.info("Loading network, loss function and %s optimizer was successful", self.args.optimizer)

@@ -38,6 +38,7 @@ class DeepLearningComparison:
         self.criterion = None
         self.optimizer = None
         self.save_loss_all = np.array([])
+        self.save_accuracy_all = np.array([])
 
     def load_data(self):
         logger.info("Start loading data")
@@ -164,8 +165,13 @@ class DeepLearningComparison:
 
         # Calculate accuracy and log
         accuracy = 100. * correct / total
+        self.save_accuracy_all = np.append(self.save_accuracy_all, accuracy)
         logger.info("Evaluation successful, result: ")
         logger.info(accuracy)
+
+    def save_output(self):
+        np.savetxt(os.path.join(self.args.output_path, 'epoch_error.csv'), self.save_loss_all)
+        np.savetxt(os.path.join(self.args.output_path, 'accuracy.csv'), self.save_accuracy_all)
 
     def run(self):
         logger.info("Start the run")
@@ -173,7 +179,7 @@ class DeepLearningComparison:
         self.load_network()
         self.train_network()
         self.eval_network()
-        np.savetxt(os.path.join(self.args.output_path, 'epoch_error.csv'), self.save_loss_all)
+        self.save_output()
 
 
 def main():

@@ -39,15 +39,17 @@ class DeepLearningComparison:
         self.net = None
         self.criterion = None
         self.optimizer = None
-        self.save_loss_all = np.array([])
-        self.save_accuracy_all = np.array([])
+        self.train_loss = np.array([])
+        self.test_accuracy = np.array([])
+        self.val_loss = np.array([])
 
     def load_data(self):
         logger.info("Start loading data")
         if not os.path.exists(self.args.root):
             os.makedirs(self.args.root)
 
-        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))])
+        transform = transforms.Compose([transforms.ToTensor(),
+                                        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))])
 
         # Loading the training data
         train_set = torchvision.datasets.CIFAR10(self.args.root, train=True, transform=transform,
@@ -107,41 +109,33 @@ class DeepLearningComparison:
 
     def train_network(self):
         logger.info("Start training network")
-        if not os.path.exists(self.args.output):
-            os.makedirs(self.args.output)
-
-        save_loss = np.zeros(EPOCH_INTERVAL)
 
         self.net.train()
-        for epoch in range(int(EPOCH_INTERVAL)):
-            epoch_loss = 0.0
-            for i, data in enumerate(self.train_loader, 0):
-                # Getting the inputs
-                inputs, labels = data
+        epoch_loss = 0.0
+        for i, data in enumerate(self.train_loader, 0):
+            # Getting the inputs
+            inputs, labels = data
 
-                # Move inputs to GPU if needed
-                if self.args.gpu:
-                    inputs = inputs.to('cuda')
-                    labels = labels.to('cuda')
+            # Move inputs to GPU if needed
+            if self.args.gpu:
+                inputs = inputs.to('cuda')
+                labels = labels.to('cuda')
 
-                # Zero the parameter gradients
-                self.optimizer.zero_grad()
+            # Zero the parameter gradients
+            self.optimizer.zero_grad()
 
-                # Forwards
-                outputs = self.net(inputs)
+            # Forwards
+            outputs = self.net(inputs)
 
-                # Backwards
-                loss = self.criterion(outputs, labels)
-                loss.backward()
-                self.optimizer.step()
+            # Backwards
+            loss = self.criterion(outputs, labels)
+            loss.backward()
+            self.optimizer.step()
 
-                # Save loss
-                epoch_loss += loss.item()
+            # Save loss
+            epoch_loss += loss.item()
 
-            logging.info("[%d] loss: %.3f", epoch + 1, epoch_loss)
-            save_loss[epoch] = epoch_loss
-
-        self.save_loss_all = np.append(self.save_loss_all, save_loss)
+        self.train_loss = np.append(self.train_loss, epoch_loss)
         logger.info("Training networks was successful")
 
     def eval_network(self):
@@ -150,6 +144,8 @@ class DeepLearningComparison:
         self.net.eval()
         total = 0
         correct = 0
+        epoch_loss = 0.0
+
         with torch.no_grad():
             for i, data in enumerate(self.test_loader, 0):
                 inputs, labels = data
@@ -161,31 +157,44 @@ class DeepLearningComparison:
 
                 # Predict
                 outputs = self.net(inputs)
+                loss = self.criterion(outputs, labels)
                 _, predicted = outputs.max(1)
 
                 # Count amount of correct labels
                 total += labels.size(0)
                 correct += predicted.eq(labels).sum().item()
 
+                # Save loss
+                epoch_loss += loss.item()
+
+        self.val_loss = np.append(self.val_loss, epoch_loss)
+
         # Calculate accuracy and log
         accuracy = 100. * correct / total
-        self.save_accuracy_all = np.append(self.save_accuracy_all, accuracy)
+        self.test_accuracy = np.append(self.test_accuracy, accuracy)
         logger.info("Evaluation successful, result: ")
         logger.info(accuracy)
 
     def save_output(self):
-        np.savetxt(os.path.join(self.args.output, 'epoch_error.csv'), self.save_loss_all)
-        np.savetxt(os.path.join(self.args.output, 'accuracy.csv'), self.save_accuracy_all)
+        if not os.path.exists(self.args.output):
+            os.makedirs(self.args.output)
+
+        np.savetxt(os.path.join(self.args.output, 'train_loss.csv'), self.train_loss)
+        np.savetxt(os.path.join(self.args.output, 'val_loss.csv'), self.val_loss)
+        np.savetxt(os.path.join(self.args.output, 'accuracy.csv'), self.test_accuracy)
 
     def run(self):
         logger.info("Start the run")
         self.load_data()
         self.load_network()
-        num_iter = int(int(self.args.epochs)/EPOCH_INTERVAL)
-        for i in range(num_iter):
-            logger.info("Starting on training/eval %d", i)
+
+        for epoch in range(self.args.epochs):
+            logger.info("Starting on training/eval %d", epoch)
             self.train_network()
+
+            logger.info("[%d] loss: %.3f", epoch + 1, self.train_loss[-1])
             self.eval_network()
+
         self.save_output()
 
 

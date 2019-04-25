@@ -2,6 +2,7 @@ import argparse
 import logging
 import os
 import sys
+import numpy as np
 
 import torch
 import torch.nn as nn
@@ -22,6 +23,7 @@ def get_args():
     parser.add_argument('--optimizer', '-o', metavar='STRING', default="", help="The optimizer you want to use")
     parser.add_argument('--job_id', '-j', metavar='STRING', default="", help="Job_id used for saving files")
     parser.add_argument('--root', '-d', metavar='STRING', default="./data/", help="Path to data")
+    parser.add_argument('--output', '-p', metavar='STRING', default="./output/", help="Path for output")
     return parser.parse_args()
 
 
@@ -34,6 +36,7 @@ class DeepLearningComparison:
         self.net = None
         self.criterion = None
         self.optimizer = None
+        self.save_loss_all = np.array([])
 
     def load_data(self):
         logger.info("Start loading data")
@@ -100,7 +103,10 @@ class DeepLearningComparison:
 
     def train_network(self):
         logger.info("Start training network")
+        if not os.path.exists(self.args.output_path):
+            os.makedirs(self.args.output_path)
 
+        save_loss = np.zeros(len(self.args.epochs))
         for epoch in range(int(self.args.epochs)):
             epoch_loss = 0.0
             for i, data in enumerate(self.train_loader, 0):
@@ -127,7 +133,9 @@ class DeepLearningComparison:
                 epoch_loss += loss.item()
 
             logging.info("[%d] loss: %.3f", epoch + 1, epoch_loss)
+            save_loss[epoch] = epoch_loss
 
+        self.save_loss_all = np.append(self.save_loss_all, save_loss)
         logger.info("Training networks was successful")
 
     def eval_network(self):
@@ -164,6 +172,7 @@ class DeepLearningComparison:
         self.load_network()
         self.train_network()
         self.eval_network()
+        np.savetxt(os.path.join(self.args.output_path, 'epoch_error.csv'), self.save_loss_all)
 
 
 def main():

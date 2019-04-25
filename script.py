@@ -172,8 +172,7 @@ class DeepLearningComparison:
         # Calculate accuracy and log
         accuracy = 100. * correct / total
         self.test_accuracy = np.append(self.test_accuracy, accuracy)
-        logger.info("Evaluation successful, result: ")
-        logger.info(accuracy)
+        logger.info("Evaluation successful, result: %f %%", accuracy)
 
     def save_output(self):
         if not os.path.exists(self.args.output):

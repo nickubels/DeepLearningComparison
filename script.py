@@ -19,8 +19,8 @@ def get_args():
     parser = argparse.ArgumentParser(description='Train the network')
     parser.add_argument('--gpu', '-g', action='store_true', default=False, help="Whether the GPU should be used or not")
     parser.add_argument('--epochs', '-e', metavar='INT', default=20, help="Amount of epochs")
-    parser.add_argument('--optimizer', '-o', metavar='STRING', default="", help="The optimizer you want to use")
-    parser.add_argument('--job_id', '-j', metavar='STRING', default="sgd", help="Job_id used for saving files")
+    parser.add_argument('--optimizer', '-o', metavar='STRING', default="sgd", help="The optimizer you want to use")
+    parser.add_argument('--job_id', '-j', metavar='STRING', default="", help="Job_id used for saving files")
     parser.add_argument('--root', '-d', metavar='STRING', default="./data/", help="Path to data")
     parser.add_argument('--output', '-p', metavar='STRING', default="./output/", help="Path for output")
     parser.add_argument('--split', '-s', metavar='INT', default=.9,

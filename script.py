@@ -61,9 +61,10 @@ class DeepLearningComparison:
         test_set = torchvision.datasets.CIFAR10(self.args.root, train=False, transform=transform,
                                                 target_transform=None, download=True)
 
-        num_train = len(test_set)
-        indices = list(range(num_train))
-        split = int(np.floor(int(self.args.split)*num_train))
+        # To be commented!
+        num_test = len(test_set)
+        indices = list(range(num_test))
+        split = int(np.floor(float(self.args.split)*num_test))
         np.random.seed(int(self.args.seed))
         np.random.shuffle(indices)
         test_idx, valid_idx = indices[split:], indices[:split]

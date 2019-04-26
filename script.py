@@ -23,7 +23,7 @@ def get_args():
     parser.add_argument('--job_id', '-j', metavar='STRING', default="", help="Job_id used for saving files")
     parser.add_argument('--root', '-d', metavar='STRING', default="./data/", help="Path to data")
     parser.add_argument('--output', '-p', metavar='STRING', default="./output/", help="Path for output")
-    parser.add_argument('--split', '-s', metavar='INT', default=.9,
+    parser.add_argument('--split', '-s', metavar='FLOAT', default=0.9,
                         help="percentage of test set used for validation set")
     parser.add_argument('--seed', '-r', metavar='INT', default=1337, help="Random seed for shuffle")
     return parser.parse_args()
@@ -219,6 +219,11 @@ class DeepLearningComparison:
 
             logger.info("[%d] loss: %.3f", epoch + 1, self.train_loss[-1])
             self.eval_network(validation=False)
+
+            if epoch >= 3 and \
+                    self.test_accuracy[-1] <= self.test_accuracy[-2] <= self.test_accuracy[-3] <= self.test_accuracy[-4]:
+                logger.info("There has not been an increase in the last 3 epochs, current epoch: %d", epoch)
+                break
             
         self.eval_network(validation=True)
         self.save_output()

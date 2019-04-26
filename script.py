@@ -204,9 +204,9 @@ class DeepLearningComparison:
         if not os.path.exists(self.args.output):
             os.makedirs(self.args.output)
 
-        np.savetxt(os.path.join(self.args.output, str(self.args.jobid) + '_train_loss.csv'), self.train_loss)
-        np.savetxt(os.path.join(self.args.output, str(self.args.jobid) + '_val_loss.csv'), self.val_loss)
-        np.savetxt(os.path.join(self.args.output, str(self.args.jobid) + '_accuracy.csv'), self.test_accuracy)
+        np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_train_loss.csv'), self.train_loss)
+        np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_val_loss.csv'), self.val_loss)
+        np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_accuracy.csv'), self.test_accuracy)
 
     def run(self):
         logger.info("Start the run")

@@ -41,7 +41,7 @@ class DeepLearningComparison:
         self.criterion = None
         self.optimizer = None
         self.train_loss = np.array([])
-        self.test_accuracy = np.array([])
+        self.val_accuracy = np.array([])
         self.val_loss = np.array([])
 
     def load_data(self):
@@ -58,22 +58,27 @@ class DeepLearningComparison:
         self.train_loader = torch.utils.data.DataLoader(train_set, batch_size=512, shuffle=True, num_workers=2)
 
         # Loading the test data
-        test_set = torchvision.datasets.CIFAR10(self.args.root, train=False, transform=transform,
+        valid_set = torchvision.datasets.CIFAR10(self.args.root, train=False, transform=transform,
                                                 target_transform=None, download=True)
 
-        # To be commented!
-        num_test = len(test_set)
+        # Calculate the random split between validation and test
+        num_test = len(valid_set)
         indices = list(range(num_test))
         split = int(np.floor(float(self.args.split)*num_test))
+
+        # Seed for reproduction
         np.random.seed(int(self.args.seed))
+        # Shuffle indices
         np.random.shuffle(indices)
-        test_idx, valid_idx = indices[split:], indices[:split]
-        test_sampler = torch.utils.data.sampler.SubsetRandomSampler(test_idx)
+        # Perform the actual split
+        valid_idx, test_idx = indices[split:], indices[:split]
+        # Setup samplers for validation and test
         valid_sampler = torch.utils.data.sampler.SubsetRandomSampler(valid_idx)
+        test_sampler = torch.utils.data.sampler.SubsetRandomSampler(test_idx)
 
-        self.test_loader = torch.utils.data.DataLoader(test_set, batch_size=512, num_workers=2, sampler=test_sampler)
-
-        self.valid_loader = torch.utils.data.DataLoader(test_set, batch_size=512, num_workers=2, sampler=valid_sampler)
+        self.valid_loader = torch.utils.data.DataLoader(valid_set, batch_size=512, num_workers=2, sampler=valid_sampler)
+        self.test_loader = torch.utils.data.DataLoader(valid_set, batch_size=512, num_workers=2, sampler=test_sampler)
+        
         logger.info("Loading data was successful")
 
     def load_network(self):
@@ -153,7 +158,7 @@ class DeepLearningComparison:
         self.train_loss = np.append(self.train_loss, epoch_loss)
         logger.info("Training networks was successful")
 
-    def eval_network(self, validation):
+    def eval_network(self, test):
         logger.info("Start evaluating the network")
 
         self.net.eval()
@@ -161,10 +166,10 @@ class DeepLearningComparison:
         correct = 0
         epoch_loss = 0.0
 
-        if validation:
-            loader = self.valid_loader
-        else:
+        if test:
             loader = self.test_loader
+        else:
+            loader = self.valid_loader
 
         with torch.no_grad():
             for i, data in enumerate(loader, 0):
@@ -187,18 +192,18 @@ class DeepLearningComparison:
                 # Save loss
                 epoch_loss += loss.item()
 
-        if validation:
-            logger.info("Validation loss: %f", epoch_loss)
+        if test:
+            logger.info("Test loss: %f", epoch_loss)
         else:
             self.val_loss = np.append(self.val_loss, epoch_loss)
 
         # Calculate accuracy and log
         accuracy = 100. * correct / total
-        if validation:
-            logger.info("Validation successful, result: %f %%", accuracy)
+        if test:
+            logger.info("Test successful, result: %f %%", accuracy)
         else:
-            self.test_accuracy = np.append(self.test_accuracy, accuracy)
-            logger.info("Evaluation successful, result: %f %%", accuracy)
+            self.val_accuracy = np.append(self.val_accuracy, accuracy)
+            logger.info("Validation successful, result: %f %%", accuracy)
 
     def save_output(self):
         if not os.path.exists(self.args.output):
@@ -206,7 +211,7 @@ class DeepLearningComparison:
 
         np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_train_loss.csv'), self.train_loss)
         np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_val_loss.csv'), self.val_loss)
-        np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_accuracy.csv'), self.test_accuracy)
+        np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_accuracy.csv'), self.val_accuracy)
 
     def run(self):
         logger.info("Start the run")
@@ -214,18 +219,18 @@ class DeepLearningComparison:
         self.load_network()
 
         for epoch in range(int(self.args.epochs)):
-            logger.info("Starting on training/eval %d", epoch)
+            logger.info("Starting on training/validation %d", epoch)
             self.train_network()
 
-            logger.info("[%d] loss: %.3f", epoch + 1, self.train_loss[-1])
-            self.eval_network(validation=False)
+            logger.info("[%d] loss: %.3f", epoch, self.train_loss[-1])
+            self.eval_network(test=False)
 
             if epoch >= 3 and \
-                    self.test_accuracy[-1] <= self.test_accuracy[-2] <= self.test_accuracy[-3] <= self.test_accuracy[-4]:
+                    self.val_loss[-1] <= self.val_loss[-2] <= self.val_loss[-3] <= self.val_loss[-4]:
                 logger.info("There has not been an increase in the last 3 epochs, current epoch: %d", epoch)
                 break
             
-        self.eval_network(validation=True)
+        self.eval_network(test=True)
         self.save_output()
 
 

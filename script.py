@@ -13,7 +13,11 @@ import torchvision.transforms as transforms
 from vgg import VGG
 
 logger = logging.getLogger()
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+logging.basicConfig(
+    stream=sys.stdout,
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=logging.DEBUG,
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 def get_args():
     parser = argparse.ArgumentParser(description='Train the network')

@@ -11,7 +11,7 @@ import torchvision
 import torchvision.transforms as transforms
 
 from vgg import VGG
-from resnet import ResNet50
+from resnet import ResNet18
 
 logger = logging.getLogger()
 logging.basicConfig(
@@ -91,7 +91,7 @@ class DeepLearningComparison:
 
         # Load a network
         #self.net = VGG('VGG11')
-        self.net = ResNet50()
+        self.net = ResNet18()
 
         # Move network to GPU if needed
         if self.args.gpu:
@@ -225,9 +225,9 @@ class DeepLearningComparison:
         if not os.path.exists(self.args.output):
             os.makedirs(self.args.output)
 
-        np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_train_loss.csv', format='%10.5f'), self.train_loss)
-        np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_val_loss.csv', format='%10.5f'), self.val_loss)
-        np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_accuracy.csv', format='%10.5f'), self.val_accuracy)
+        np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_train_loss.csv'), self.train_loss, fmt='%10.5f')
+        np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_val_loss.csv'), self.val_loss, fmt='%10.5f')
+        np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_accuracy.csv'), self.val_accuracy, fmt='%10.5f')
 
     def run(self):
         logger.info("Start the run")

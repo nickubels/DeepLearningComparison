@@ -225,9 +225,9 @@ class DeepLearningComparison:
             logger.info("[%d] loss: %.3f", epoch, self.train_loss[-1])
             self.eval_network(test=False)
 
-            if epoch >= 3 and \
-                    self.val_loss[-1] <= self.val_loss[-2] <= self.val_loss[-3] <= self.val_loss[-4]:
-                logger.info("There has not been an increase in the last 3 epochs, current epoch: %d", epoch)
+            if epoch >= 4 and \
+                    self.val_loss[-1] >= self.val_loss[-2] >= self.val_loss[-3] >= self.val_loss[-4] >= self.val_loss[-5]:
+                logger.info("There has not been an decrease in the last 5 epochs, current epoch: %d", epoch)
                 break
             
         self.eval_network(test=True)

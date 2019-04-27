@@ -99,34 +99,44 @@ class DeepLearningComparison:
         self.criterion = nn.CrossEntropyLoss()
 
         if self.args.optimizer.lower() == 'adadelta':
+            logger.info("Selected adadelta as optimizer")
             self.optimizer = optim.Adadelta(self.net.parameters(), lr=1.0, rho=0.9, eps=1e-06, weight_decay=0)
         elif self.args.optimizer.lower() == 'adagrad':
+            logger.info("Selected adagrad as optimizer")
             self.optimizer = optim.Adagrad(self.net.parameters(), lr=0.01, lr_decay=0, weight_decay=0,
                                            initial_accumulator_value=0)
         elif self.args.optimizer.lower() == 'adam':
+            logger.info("Selected adam as optimizer")
             self.optimizer = optim.Adam(self.net.parameters(), lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=0,
                                         amsgrad=False)
         elif self.args.optimizer.lower() == 'sparseadam':
+            logger.info("Selected sparseadam as optimizer")
             self.optimizer = optim.SparseAdam(self.net.parameters(), lr=0.001, betas=(0.9, 0.999), eps=1e-08)
         elif self.args.optimizer.lower() == 'adamax':
+            logger.info("Selected adamax as optimizer")
             self.optimizer = optim.Adamax(self.net.parameters(), lr=0.002, betas=(0.9, 0.999), eps=1e-08,
                                           weight_decay=0)
         elif self.args.optimizer.lower() == 'asgd':
+            logger.info("Selected asgd as optimizer")
             self.optimizer = optim.ASGD(self.net.parameters(), lr=0.01, lambd=0.0001, alpha=0.75, t0=1000000.0,
                                         weight_decay=0)
         elif self.args.optimizer.lower() == 'lbfgs':
+            logger.info("Selected lbfgs as optimizer")
             self.optimizer = optim.LBFGS(self.net.parameters(), lr=1, max_iter=20, max_eval=None, tolerance_grad=1e-05,
                                          tolerance_change=1e-09, history_size=100, line_search_fn=None)
         elif self.args.optimizer.lower() == 'rmsprop':
+            logger.info("Selected rmsprop as optimizer")
             self.optimizer = optim.RMSprop(self.net.parameters(), lr=0.01, alpha=0.99, eps=1e-08, weight_decay=0,
                                            momentum=0, centered=False)
         elif self.args.optimizer.lower() == 'rprop':
+            logger.info("Selected rprop as optimizer")
             self.optimizer = optim.Rprop(self.net.parameters(), lr=0.01, etas=(0.5, 1.2), step_sizes=(1e-06, 50))
         elif self.args.optimizer.lower() == 'sgd':
+            logger.info("Selected sgd as optimizer")
             self.optimizer = optim.SGD(self.net.parameters(), lr=0.001, momentum=0, dampening=0, weight_decay=0,
                                        nesterov=False)
         else:
-            logger.info("Unknown network given, SGD is chosen instead.")
+            logger.info("Unknown optimizer given, SGD is chosen instead.")
             self.optimizer = optim.SGD(self.net.parameters(), lr=0.001, momentum=0.9)
 
         logger.info("Loading network, loss function and %s optimizer was successful", self.args.optimizer)

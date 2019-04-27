@@ -11,6 +11,7 @@ import torchvision
 import torchvision.transforms as transforms
 
 from vgg import VGG
+from resnet import ResNet50
 
 logger = logging.getLogger()
 logging.basicConfig(
@@ -89,7 +90,8 @@ class DeepLearningComparison:
         logger.info("Start loading network, loss function and optimizer")
 
         # Load a network
-        self.net = VGG('VGG11')
+        #self.net = VGG('VGG11')
+        self.net = ResNet50()
 
         # Move network to GPU if needed
         if self.args.gpu:

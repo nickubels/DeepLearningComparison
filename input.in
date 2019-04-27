@@ -1,0 +1,10 @@
+adadelta
+adagrad
+adam
+sparseadam
+adamax
+asgd
+lbfgs
+rmsprop
+rprop
+sgd

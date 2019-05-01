@@ -2,14 +2,14 @@
 #SBATCH --time=6:30:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --partition=gpu
+#SBATCH --partition=gputest
 #SBATCH --gres=gpu:1
 #SBATCH --job-name=DLtrain
-#SBATCH --mem=2000
+#SBATCH --mem=4000
 #SBATCH --mail-type=FAIL,ARRAY_TASKS
 #SBATCH --mail-user=n.s.ubels@student.rug.nl
-#SBATCH --output=logs/%A_%a.log
-#SBATCH --array=9
+#SBATCH --output=logs/%A_%a-%j.log
+#SBATCH --array=10
 
 INPUTFILE=input.in
 ARGS=$(cat $INPUTFILE | head -n $SLURM_ARRAY_TASK_ID | tail -n 1)

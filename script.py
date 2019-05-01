@@ -234,17 +234,20 @@ class DeepLearningComparison:
         self.load_data()
         self.load_network()
 
+        scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, factor=0.5, patience=5)
+
         for epoch in range(int(self.args.epochs)):
             logger.info("Starting on training/validation %d", epoch)
             self.train_network()
 
             logger.info("[%d] loss: %.3f", epoch, self.train_loss[-1])
             self.eval_network(test=False)
+            scheduler.step(self.val_loss[-1])
 
-            if epoch >= 4 and \
-                    self.val_loss[-1] >= self.val_loss[-2] >= self.val_loss[-3] >= self.val_loss[-4] >= self.val_loss[-5]:
-                logger.info("There has not been an decrease in the last 5 epochs, current epoch: %d", epoch)
-                break
+            # if epoch >= 4 and \
+            #         self.val_loss[-1] >= self.val_loss[-2] >= self.val_loss[-3] >= self.val_loss[-4] >= self.val_loss[-5]:
+            #     logger.info("There has not been an decrease in the last 5 epochs, current epoch: %d", epoch)
+            #     break
             
         self.eval_network(test=True)
         self.save_output()

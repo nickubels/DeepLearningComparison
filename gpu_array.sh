@@ -8,7 +8,7 @@
 #SBATCH --mem=2000
 #SBATCH --mail-type=FAIL,ARRAY_TASKS
 #SBATCH --mail-user=n.s.ubels@student.rug.nl
-#SBATCH --output=logs/%A_%a.log
+#SBATCH --output=logs/%A_%a-%j.log
 #SBATCH --array=1-10
 
 INPUTFILE=/input.in

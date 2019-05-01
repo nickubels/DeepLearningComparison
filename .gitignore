@@ -107,3 +107,7 @@ data
 .idea
 output
 Archive.zip
+report.bbl
+report.blg
+report.aux
+report.pdf

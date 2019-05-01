@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --time=6:30:00
+#SBATCH --time=3:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --partition=gputest
@@ -9,7 +9,7 @@
 #SBATCH --mail-type=FAIL,ARRAY_TASKS
 #SBATCH --mail-user=n.s.ubels@student.rug.nl
 #SBATCH --output=logs/%A_%a-%j.log
-#SBATCH --array=10
+#SBATCH --array=1-9
 
 INPUTFILE=input.in
 ARGS=$(cat $INPUTFILE | head -n $SLURM_ARRAY_TASK_ID | tail -n 1)

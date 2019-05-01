@@ -41,6 +41,7 @@ class Plotter(object):
         plt.xlabel('Epochs')
         # plt.show()
         plt.savefig(os.path.join(self.args.output_path, 'accuracy.png'))
+        plt.close()
 
     def plot_validation(self):
         # Loop over all files
@@ -60,6 +61,7 @@ class Plotter(object):
         plt.xlabel('Epochs')
         # plt.show()
         plt.savefig(os.path.join(self.args.output_path, 'validation.png'))
+        plt.close()
 
     def plot_training(self):
         # Loop over all files
@@ -79,6 +81,7 @@ class Plotter(object):
         plt.xlabel('Epochs')
         # plt.show()
         plt.savefig(os.path.join(self.args.output_path, 'train.png'))
+        plt.close()
 
     def obtain_labels(self):
         files = os.listdir(self.args.log_path)

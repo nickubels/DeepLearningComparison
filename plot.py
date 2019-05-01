@@ -31,6 +31,8 @@ class Plotter(object):
             plt.plot(df)
 
         ### Generate the plot
+        plt.ylabel('Accuracy in %')
+        plt.xlabel('Epochs')
         plt.show()
 
     def plot_validation(self):
@@ -44,6 +46,8 @@ class Plotter(object):
             plt.plot(df)
 
         ### Generate the plot
+        plt.ylabel('Validation loss')
+        plt.xlabel('Epochs')
         plt.show()
 
     def plot_training(self):
@@ -57,6 +61,8 @@ class Plotter(object):
             plt.plot(df)
 
         ### Generate the plot
+        plt.ylabel('Training loss')
+        plt.xlabel('Epochs')
         plt.show()
 
 def main():

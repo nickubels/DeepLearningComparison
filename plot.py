@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 
 def get_args():
     parser = argparse.ArgumentParser(description='Plot the results')
-    parser.add_argument('--input_path', '-i', metavar='STRING', default='output', help="Where we find the input")
-    parser.add_argument('--log_path', '-l', metavar='STRING', default='logs', help="Where we find the logs")
-    parser.add_argument('--output_path', '-o', metavar='STRING', default='output', help="Where we store the output")
+    parser.add_argument('--input_path', '-i', metavar='STRING', default='plots/output', help="Where we find the input")
+    parser.add_argument('--log_path', '-l', metavar='STRING', default='plots/logs', help="Where we find the logs")
+    parser.add_argument('--output_path', '-o', metavar='STRING', default='plots', help="Where we store the output")
     return parser.parse_args()
 
 
@@ -21,7 +21,7 @@ class Plotter(object):
         self.accuracy_files = [file for file in self.fileNames if 'accuracy.csv' in file]
         self.validation_files = [file for file in self.fileNames if 'val_loss.csv' in file]
         self.train_files = [file for file in self.fileNames if 'train_loss.csv' in file]
-        self.labels={}
+        self.labels = {}
 
     def plot_accuracy(self):
         # Loop over all files
@@ -39,7 +39,8 @@ class Plotter(object):
         plt.legend()
         plt.ylabel('Accuracy in %')
         plt.xlabel('Epochs')
-        plt.show()
+        # plt.show()
+        plt.savefig(os.path.join(self.args.output_path, 'accuracy.png'))
 
     def plot_validation(self):
         # Loop over all files
@@ -57,7 +58,8 @@ class Plotter(object):
         plt.legend()
         plt.ylabel('Validation loss')
         plt.xlabel('Epochs')
-        plt.show()
+        # plt.show()
+        plt.savefig(os.path.join(self.args.output_path, 'validation.png'))
 
     def plot_training(self):
         # Loop over all files
@@ -75,7 +77,8 @@ class Plotter(object):
         plt.legend()
         plt.ylabel('Training loss')
         plt.xlabel('Epochs')
-        plt.show()
+        # plt.show()
+        plt.savefig(os.path.join(self.args.output_path, 'train.png'))
 
     def obtain_labels(self):
         files = os.listdir(self.args.log_path)

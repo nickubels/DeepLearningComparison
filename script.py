@@ -234,7 +234,7 @@ class DeepLearningComparison:
         self.load_data()
         self.load_network()
 
-        scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, factor=0.5, patience=5)
+        scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, factor=0.5, patience=10, verbose=True)
 
         for epoch in range(int(self.args.epochs)):
             logger.info("Starting on training/validation %d", epoch)

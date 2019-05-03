@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 
 def get_args():
     parser = argparse.ArgumentParser(description='Plot the results')
-    parser.add_argument('--input_path', '-i', metavar='STRING', default='plots/output', help="Where we find the input")
-    parser.add_argument('--log_path', '-l', metavar='STRING', default='plots/logs', help="Where we find the logs")
+    parser.add_argument('--input_path', '-i', metavar='STRING', default='output', help="Where we find the input")
+    parser.add_argument('--log_path', '-l', metavar='STRING', default='logs', help="Where we find the logs")
     parser.add_argument('--output_path', '-o', metavar='STRING', default='plots', help="Where we store the output")
     return parser.parse_args()
 
@@ -19,8 +19,11 @@ class Plotter(object):
         self.args = get_args()
         self.fileNames = os.listdir(self.args.input_path)
         self.accuracy_files = [file for file in self.fileNames if 'accuracy.csv' in file]
+        self.accuracy_files.sort()
         self.validation_files = [file for file in self.fileNames if 'val_loss.csv' in file]
+        self.validation_files.sort()
         self.train_files = [file for file in self.fileNames if 'train_loss.csv' in file]
+        self.train_files.sort()
         self.labels = {}
 
     def plot_accuracy(self):

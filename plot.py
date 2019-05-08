@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 
 def get_args():
     parser = argparse.ArgumentParser(description='Plot the results')
-    parser.add_argument('--input_path', '-i', metavar='STRING', default='output', help="Where we find the input")
-    parser.add_argument('--log_path', '-l', metavar='STRING', default='logs', help="Where we find the logs")
-    parser.add_argument('--output_path', '-o', metavar='STRING', default='plots', help="Where we store the output")
+    parser.add_argument('--input_path', '-i', metavar='STRING', default='plots/output', help="Where we find the input")
+    parser.add_argument('--log_path', '-l', metavar='STRING', default='plots/logs', help="Where we find the logs")
+    parser.add_argument('--output_path', '-o', metavar='STRING', default='plots/plots', help="Where we store the output")
     return parser.parse_args()
 
 
@@ -18,24 +18,21 @@ class Plotter(object):
     def __init__(self):
         self.args = get_args()
         self.fileNames = os.listdir(self.args.input_path)
-        self.accuracy_files = [file for file in self.fileNames if 'accuracy.csv' in file]
-        self.accuracy_files.sort()
-        self.validation_files = [file for file in self.fileNames if 'val_loss.csv' in file]
-        self.validation_files.sort()
-        self.train_files = [file for file in self.fileNames if 'train_loss.csv' in file]
-        self.train_files.sort()
         self.labels = {}
 
     def plot_accuracy(self):
         # Loop over all files
-        for file in self.accuracy_files:
-            # Obtain label
-            label = self.labels.get(file.split('_')[0], None)
+        plt.figure(figsize=(25, 10))
+        plt.rc('font', size=18)  # controls default text sizes
+        plt.rc('axes', titlesize=18)  # fontsize of the axes title
+        # plt.rc('axes', labelsize=MEDIUM_SIZE)  # fontsize of the x and y labels
+        plt.rc('legend', fontsize=18)  # legend fontsize
 
+        for label, file in self.labels:
             # Read .csv file and append to list
-            df = pd.read_csv(os.path.join(self.args.input_path, file))
+            df = pd.read_csv(os.path.join(self.args.input_path, file + '_accuracy.csv'))
 
-            # Create line for every file
+        # Create line for every file
             plt.plot(df, label=label)
 
         # Generate the plot
@@ -48,12 +45,15 @@ class Plotter(object):
 
     def plot_validation(self):
         # Loop over all files
-        for file in self.validation_files:
-            # Obtain label
-            label = self.labels.get(file.split('_')[0], None)
+        plt.figure(figsize=(25, 10))
+        plt.rc('font', size=18)  # controls default text sizes
+        plt.rc('axes', titlesize=18)  # fontsize of the axes title
+        # plt.rc('axes', labelsize=MEDIUM_SIZE)  # fontsize of the x and y labels
+        plt.rc('legend', fontsize=18)  # legend fontsize
 
+        for label, file in self.labels:
             # Read .csv file and append to list
-            df = pd.read_csv(os.path.join(self.args.input_path, file))
+            df = pd.read_csv(os.path.join(self.args.input_path, file + '_val_loss.csv'))
 
             # Create line for every file
             plt.plot(df, label=label)
@@ -68,12 +68,15 @@ class Plotter(object):
 
     def plot_training(self):
         # Loop over all files
-        for file in self.train_files:
-            # Obtain label
-            label = self.labels.get(file.split('_')[0], None)
+        plt.figure(figsize=(25, 10))
+        plt.rc('font', size=18)  # controls default text sizes
+        plt.rc('axes', titlesize=18)  # fontsize of the axes title
+        # plt.rc('axes', labelsize=MEDIUM_SIZE)  # fontsize of the x and y labels
+        plt.rc('legend', fontsize=18)  # legend fontsize
 
+        for label, file in self.labels:
             # Read .csv file and append to list
-            df = pd.read_csv(os.path.join(self.args.input_path, file))
+            df = pd.read_csv(os.path.join(self.args.input_path, file + '_train_loss.csv'))
 
             # Create line for every file
             plt.plot(df, label=label)
@@ -97,7 +100,9 @@ class Plotter(object):
                 job_id = job_id[0][8:-2]
                 optimizer = [s for s in first_line if "optimizer" in s]
                 optimizer = optimizer[0][11:-2]
-                self.labels[job_id] = optimizer
+                # self.labels[job_id] = optimizer
+                self.labels[optimizer] = job_id
+        self.labels = sorted(self.labels.items(), key=lambda s: s[0])
 
 
 def main():

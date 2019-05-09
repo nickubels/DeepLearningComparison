@@ -30,7 +30,7 @@ class Plotter(object):
 
         for label, file in self.labels:
             # Read .csv file and append to list
-            df = pd.read_csv(os.path.join(self.args.input_path, file + '_accuracy.csv'))
+            df = pd.read_csv(os.path.join(self.args.input_path, file + '_accuracy.csv'),header = None)
 
         # Create line for every file
             plt.plot(df, label=label)
@@ -53,7 +53,7 @@ class Plotter(object):
 
         for label, file in self.labels:
             # Read .csv file and append to list
-            df = pd.read_csv(os.path.join(self.args.input_path, file + '_val_loss.csv'))
+            df = pd.read_csv(os.path.join(self.args.input_path, file + '_val_loss.csv'),header = None)
 
             # Create line for every file
             plt.plot(df, label=label)
@@ -76,7 +76,7 @@ class Plotter(object):
 
         for label, file in self.labels:
             # Read .csv file and append to list
-            df = pd.read_csv(os.path.join(self.args.input_path, file + '_train_loss.csv'))
+            df = pd.read_csv(os.path.join(self.args.input_path, file + '_train_loss.csv'),header = None)
 
             # Create line for every file
             plt.plot(df, label=label)

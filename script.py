@@ -2,15 +2,13 @@ import argparse
 import logging
 import os
 import sys
-import numpy as np
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
-
-from vgg import VGG
 from resnet import ResNet18
 
 logger = logging.getLogger()
@@ -19,6 +17,7 @@ logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
     level=logging.DEBUG,
     datefmt='%Y-%m-%d %H:%M:%S')
+
 
 def get_args():
     parser = argparse.ArgumentParser(description='Train the network')
@@ -64,12 +63,12 @@ class DeepLearningComparison:
 
         # Loading the test data
         valid_set = torchvision.datasets.CIFAR10(self.args.root, train=False, transform=transform,
-                                                target_transform=None, download=True)
+                                                 target_transform=None, download=True)
 
         # Calculate the random split between validation and test
         num_test = len(valid_set)
         indices = list(range(num_test))
-        split = int(np.floor(float(self.args.split)*num_test))
+        split = int(np.floor(float(self.args.split) * num_test))
 
         # Seed for reproduction
         np.random.seed(int(self.args.seed))
@@ -83,14 +82,14 @@ class DeepLearningComparison:
 
         self.valid_loader = torch.utils.data.DataLoader(valid_set, batch_size=512, num_workers=2, sampler=valid_sampler)
         self.test_loader = torch.utils.data.DataLoader(valid_set, batch_size=512, num_workers=2, sampler=test_sampler)
-        
+
         logger.info("Loading data was successful")
 
     def load_network(self):
         logger.info("Start loading network, loss function and optimizer")
 
         # Load a network
-        #self.net = VGG('VGG11')
+        # self.net = VGG('VGG11')
         self.net = ResNet18()
 
         # Move network to GPU if needed
@@ -225,9 +224,12 @@ class DeepLearningComparison:
         if not os.path.exists(self.args.output):
             os.makedirs(self.args.output)
 
-        np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_train_loss.csv'), self.train_loss, fmt='%10.5f')
-        np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_val_loss.csv'), self.val_loss, fmt='%10.5f')
-        np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_accuracy.csv'), self.val_accuracy, fmt='%10.5f')
+        np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_train_loss.csv'),
+                   self.train_loss, fmt='%10.5f')
+        np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_val_loss.csv'),
+                   self.val_loss, fmt='%10.5f')
+        np.savetxt(os.path.join(self.args.output, str(self.args.job_id) + '_accuracy.csv'),
+                   self.val_accuracy, fmt='%10.5f')
 
     def run(self):
         logger.info("Start the run")
@@ -244,11 +246,6 @@ class DeepLearningComparison:
             self.eval_network(test=False)
             scheduler.step(self.val_loss[-1])
 
-            # if epoch >= 4 and \
-            #         self.val_loss[-1] >= self.val_loss[-2] >= self.val_loss[-3] >= self.val_loss[-4] >= self.val_loss[-5]:
-            #     logger.info("There has not been an decrease in the last 5 epochs, current epoch: %d", epoch)
-            #     break
-            
         self.eval_network(test=True)
         self.save_output()
 

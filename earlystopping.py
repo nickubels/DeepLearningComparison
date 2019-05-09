@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 
 def get_args():
     parser = argparse.ArgumentParser(description='Calculate the early stopping epoch')
-    parser.add_argument('--input_path', '-i', metavar='STRING', default='plots/output', help="Where we find the input")
-    parser.add_argument('--log_path', '-l', metavar='STRING', default='plots/logs', help="Where we find the logs")
+    parser.add_argument('--input_path', '-i', metavar='STRING', default='output', help="Where we find the input")
+    parser.add_argument('--log_path', '-l', metavar='STRING', default='logs', help="Where we find the logs")
     # parser.add_argument('--output_path', '-o', metavar='STRING', default='plots/plots', help="Where we store the output")
     return parser.parse_args()
 
@@ -22,8 +22,16 @@ class EarlyStopping(object):
 
     def calc_es(self):
         for label, file in self.labels:
-            df_train = pd.read_csv(os.path.join(self.args.input_path, file + '_train_loss.csv'))
-            df_val = pd.read_csv(os.path.join(self.args.input_path, file + '_val_loss.csv'))
+            df_train = pd.read_csv(os.path.join(self.args.input_path, file + '_train_loss.csv'),header = None)
+            df_val = pd.read_csv(os.path.join(self.args.input_path, file + '_val_loss.csv'),header = None)
+            for index, row in df_train.iterrows():
+                if index > 4:
+                    continue
+                    # print(df_val.iloc[index])
+                    # if df_val[index]:
+                print(index, row)
+            # for epoch in df_train:
+            #     print(epoch)
 
 
     def obtain_labels(self):
@@ -44,6 +52,7 @@ class EarlyStopping(object):
 def main():
     plotter = EarlyStopping()
     plotter.obtain_labels()
+    plotter.calc_es()
 
 
 

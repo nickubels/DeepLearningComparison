@@ -83,12 +83,9 @@ class DeepLearningComparison:
         self.valid_loader = torch.utils.data.DataLoader(valid_set, batch_size=512, num_workers=2, sampler=valid_sampler)
         self.test_loader = torch.utils.data.DataLoader(valid_set, batch_size=512, num_workers=2, sampler=test_sampler)
 
-        print("Train")
-        print(len(train_set))
-        print("Valid")
-        print(len(valid_idx))
-        print("Test")
-        print(len(test_idx))
+        logger.info("Loaded %d training images", len(train_set))
+        logger.info("Loaded %d validation images", len(valid_idx))
+        logger.info("Loaded %d test images", len(test_idx))
 
         logger.info("Loading data was successful")
 

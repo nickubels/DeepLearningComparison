@@ -1,0 +1,9 @@
+,Early Stopping Epoch,Early Stopping Accuracy (%),Accuracy (%)
+adadelta,16,81.38,84.82
+adagrad,24,83.16,83.14
+adam,15,83.06,85.88
+adamax,15,81.28,84.92
+asgd,18,69.8,71.96
+rmsprop,17,73.6,78.62
+rprop,99,55.64,55.64
+sgd,79,61.94,64.76

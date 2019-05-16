@@ -6,8 +6,8 @@ import pandas as pd
 
 def get_args():
     parser = argparse.ArgumentParser(description='Calculate the early stopping epoch')
-    parser.add_argument('--input_path', '-i', metavar='STRING', default='datadl/output', help="Where we find the input")
-    parser.add_argument('--log_path', '-l', metavar='STRING', default='datadl/logs', help="Where we find the logs")
+    parser.add_argument('--input_path', '-i', metavar='STRING', default='plots/output', help="Where we find the input")
+    parser.add_argument('--log_path', '-l', metavar='STRING', default='plots/logs', help="Where we find the logs")
     parser.add_argument('--output_path', '-o', metavar='STRING', default='plots/tables',
                         help="Where we store the output")
     parser.add_argument('--n', '-n', metavar='INT', default=10,
@@ -109,6 +109,9 @@ class EarlyStopping(object):
 
         # Sort the dictionary based on keys, which makes the legend nicer
         self.labels = sorted(self.labels.items(), key=lambda s: s[0])
+
+        # Create map for table
+        os.makedirs(os.path.join(os.getcwd(), self.args.output_path), exist_ok=True)
 
 
 def main():

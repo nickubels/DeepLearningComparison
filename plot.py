@@ -134,8 +134,12 @@ class Plotter(object):
         # Sort the dictionary based on keys, which makes the legend nicer
         self.labels = sorted(self.labels.items(), key=lambda s: s[0])
 
+        # Create map for plots
+        os.makedirs(os.path.join(os.getcwd(), self.args.output_path), exist_ok=True)
+
 
 def main():
+
     plotter = Plotter()
     plotter.obtain_labels()
     plotter.plot_accuracy()

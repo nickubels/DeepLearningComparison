@@ -27,7 +27,7 @@ def get_args():
     parser.add_argument('--job_id', '-j', metavar='STRING', default="", help="Job_id used for saving files")
     parser.add_argument('--root', '-d', metavar='STRING', default="./data/", help="Path to data")
     parser.add_argument('--output', '-p', metavar='STRING', default="./output/", help="Path for output")
-    parser.add_argument('--split', '-s', metavar='FLOAT', default=0.9,
+    parser.add_argument('--split', '-s', metavar='FLOAT', default=0.5,
                         help="percentage of test set used for validation set")
     parser.add_argument('--seed', '-r', metavar='INT', default=1337, help="Random seed for shuffle")
     return parser.parse_args()
@@ -82,6 +82,13 @@ class DeepLearningComparison:
 
         self.valid_loader = torch.utils.data.DataLoader(valid_set, batch_size=512, num_workers=2, sampler=valid_sampler)
         self.test_loader = torch.utils.data.DataLoader(valid_set, batch_size=512, num_workers=2, sampler=test_sampler)
+
+        print("Train")
+        print(len(train_set))
+        print("Valid")
+        print(len(valid_idx))
+        print("Test")
+        print(len(test_idx))
 
         logger.info("Loading data was successful")
 

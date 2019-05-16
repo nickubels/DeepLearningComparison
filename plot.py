@@ -23,70 +23,85 @@ class Plotter(object):
     def plot_accuracy(self):
         # Loop over all files
         plt.figure(figsize=(25, 10))
-        plt.rc('font', size=18)  # controls default text sizes
-        plt.rc('axes', titlesize=18)  # fontsize of the axes title
+        plt.rc('font', size=26)  # controls default text sizes
+        plt.rc('axes', titlesize=26)  # fontsize of the axes title
         # plt.rc('axes', labelsize=MEDIUM_SIZE)  # fontsize of the x and y labels
-        plt.rc('legend', fontsize=18)  # legend fontsize
+        plt.rc('legend', fontsize=26)  # legend fontsize
 
         for label, file in self.labels:
             # Read .csv file and append to list
             df = pd.read_csv(os.path.join(self.args.input_path, file + '_accuracy.csv'))
 
         # Create line for every file
-            plt.plot(df, label=label)
+            plt.plot(df, label=label, linewidth=3.0)
 
         # Generate the plot
-        plt.legend()
+        leg = plt.legend()
         plt.ylabel('Accuracy in %')
         plt.xlabel('Epochs')
         # plt.show()
-        plt.savefig(os.path.join(self.args.output_path, 'accuracy.png'))
+
+        # bulk-set the properties of all lines
+        leg_lines = leg.get_lines()
+        plt.setp(leg_lines, linewidth=4)
+
+        plt.savefig(os.path.join(self.args.output_path, 'accuracy.png'), bbox_inches='tight')
         plt.close()
 
     def plot_validation(self):
         # Loop over all files
         plt.figure(figsize=(25, 10))
-        plt.rc('font', size=18)  # controls default text sizes
-        plt.rc('axes', titlesize=18)  # fontsize of the axes title
+        plt.rc('font', size=26)  # controls default text sizes
+        plt.rc('axes', titlesize=26)  # fontsize of the axes title
         # plt.rc('axes', labelsize=MEDIUM_SIZE)  # fontsize of the x and y labels
-        plt.rc('legend', fontsize=18)  # legend fontsize
+        plt.rc('legend', fontsize=26)  # legend fontsize
 
         for label, file in self.labels:
             # Read .csv file and append to list
             df = pd.read_csv(os.path.join(self.args.input_path, file + '_val_loss.csv'))
 
             # Create line for every file
-            plt.plot(df, label=label)
+            plt.plot(df, label=label, linewidth=3.0)
 
         # Generate the plot
-        plt.legend()
+        leg = plt.legend()
         plt.ylabel('Validation loss')
         plt.xlabel('Epochs')
         # plt.show()
-        plt.savefig(os.path.join(self.args.output_path, 'validation.png'))
+
+        # bulk-set the properties of all lines
+        leg_lines = leg.get_lines()
+        plt.setp(leg_lines, linewidth=4)
+
+        plt.savefig(os.path.join(self.args.output_path, 'validation.png'), bbox_inches='tight')
         plt.close()
 
     def plot_training(self):
         # Loop over all files
         plt.figure(figsize=(25, 10))
-        plt.rc('font', size=18)  # controls default text sizes
-        plt.rc('axes', titlesize=18)  # fontsize of the axes title
+        plt.rc('font', size=26)  # controls default text sizes
+        plt.rc('axes', titlesize=26)  # fontsize of the axes title
         # plt.rc('axes', labelsize=MEDIUM_SIZE)  # fontsize of the x and y labels
-        plt.rc('legend', fontsize=18)  # legend fontsize
+        plt.rc('legend', fontsize=26)  # legend fontsize
 
         for label, file in self.labels:
             # Read .csv file and append to list
             df = pd.read_csv(os.path.join(self.args.input_path, file + '_train_loss.csv'))
 
             # Create line for every file
-            plt.plot(df, label=label)
+            plt.plot(df, label=label, linewidth=3.0)
 
         # Generate the plot
-        plt.legend()
+        leg = plt.legend()
         plt.ylabel('Training loss')
         plt.xlabel('Epochs')
         # plt.show()
-        plt.savefig(os.path.join(self.args.output_path, 'train.png'))
+
+        # bulk-set the properties of all lines
+        leg_lines = leg.get_lines()
+        plt.setp(leg_lines, linewidth=4)
+
+        plt.savefig(os.path.join(self.args.output_path, 'train.png'), bbox_inches='tight')
         plt.close()
 
     def obtain_labels(self):

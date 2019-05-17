@@ -135,7 +135,7 @@ class Plotter(object):
         self.labels = sorted(self.labels.items(), key=lambda s: s[0])
 
         # Create map for plots
-        os.makedirs(os.path.join(os.getcwd(), self.args.output_path), exist_ok=True)
+        os.makedirs(self.args.output_path, exist_ok=True)
 
 
 def main():
